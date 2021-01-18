@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Description" />
+    <meta name="keywords" content="Keywords" />
+    <meta name="author" content="lee.chang" />
+    <meta
+      name="viewport"
+      content="width=device-width initial-scale=1 minimum-scale=1 maximum-scale=1 user-scalable=no"
+    />
+    <title>音频播放器</title>
+    <style></style>
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/utils.js"></script>
+    <link rel="stylesheet" href="./font/iconfont.css" />
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <style>
+      html, body {
+        padding: 0;
+        margin: 0;
+      }
+      .lc__audio {
+        position: fixed;
+        display: flex;
+        align-items: center;
+        height: 100px;
+        bottom: 0;
+        width: 100%;
+        background-color: aquamarine;
+      }
+
+      .lc__audio_control .iconfont {
+        font-size: 40px;
+      }
+
+      .lc_control_wrapper {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      .lc__audio_control {
+        display: flex;
+        align-items: center;
+      }
+
+      .lc__audio_play {
+        margin: 0 20px;
+      }
+
+      .audio-loading {
+        display: inline-block;
+        -webkit-animation: audio-loading 1s linear infinite;
+        animation: audio-loading 1s linear infinite;
+        transform-origin: center;
+      }
+
+      @-webkit-keyframes audio-loading {
+        to {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes audio-loading {
+        to {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
+      .audio-info {
+        flex: 1;
+      }
+
+      .flex-b-center {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      p {
+        padding-bottom: 10px;
+        margin: 0;
+      }
+
+      .lc__progress {
+        position: relative;
+        background-color: lightgray;
+        width: 100%;
+        height: 4px;
+      }
+
+      .progress__now {
+        height: 4px;
+        background-color: cornflowerblue;
+      }
+      
+    </style>
+    <script>
+      new Vue({
+        el: "#app",
+        template: `
+          <div class="lc__audio">
+            <audio preload="auto" ref="audioRef">
+                <source :src="audio[selectMusicIndex].src" type="audio/mpeg">
+            </audio>
+            <div class="lc_control_wrapper">
+              <div class="lc__audio_control">
+                <span class="iconfont icon-prev" @click="prevAudio"></span>
+                <div class="lc__audio_play">
+                  <span v-if="playStatus === 0" class="iconfont icon-play" @click="audioControl"></span>
+                  <span v-else-if="playStatus === 1" class="iconfont icon-loading audio-loading" @click="endAudio"></span>
+                  <span v-else class="iconfont icon-stop" @click="endAudio"></span>
+                </div>
+                <span class="iconfont icon-next" @click="nextAudio"></span>
+              </div>
+              <div class="audio-info">
+                <div class="flex-b-center">
+                  <p>{{ audio[selectMusicIndex].title }} ---- {{ audio[selectMusicIndex].artist }}</p>
+                  <span v-if="duration">{{ dealWithTime(time) + '/' + dealWithTime(duration) }}</span>
+                </div>
+                <div class="play__progress">
+                  <div class="lc__progress" ref="progressRef">
+                    <div class="progress__now" :style="{width: nowProgress()+'px'}"></div>   
+                  </div> 
+                </div>
+              </div> 
+            </div>
+          </div>
+        `,
+        data() {
+          return {
+            selectMusicIndex: 0,
+            audio: [
+              {
+                title: "踏山河",
+                artist: "七叔",
+                src: "http://img1.yanqingkong.com/Public/css/1.mp3",
+              },
+              {
+                title: "Despacito",
+                artist: "Luis Fonsi",
+                src: "http://img1.yanqingkong.com/Public/css/943789652.mp3",
+              },
+            ],
+            audioEl: null,
+            duration: 0,
+            playStatus: 0,
+            time: 0,
+          };
+        },
+        computed: {
+          
+        },
+        created() {},
+        mounted() {
+          this.$nextTick(() => {
+            this.audioEl = this.$refs.audioRef;
+            // console.log('当前音频');
+            // console.log(this.audio);
+
+            this.audioEl.addEventListener("error", (...data) => {
+              console.log("error", data);
+            });
+
+            this.audioEl.addEventListener("play", (...data) => {
+              console.log("play", data);
+              console.log(this.audioEl.duration);
+              // this.audioEl.currentTime = this.time;
+              // this.duration = this.audioEl.duration;
+              // console.log(self.audio.currentTime)
+              // if (this.audio.currentTime === 0) {
+
+              // }
+              //     setTimeout(function () {
+              //         console.log('currentTime:'+Math.round(self.audio.currentTime));
+              //         if (self.audio.currentTime < 0.1) {
+              //             self.endAudio()
+              //         }
+              //     }, 1000)
+            });
+
+            this.audioEl.addEventListener("playing", (...data) => {
+              console.log("playing", data);
+            });
+
+            this.audioEl.addEventListener("canplaythrough", (...data) => {
+              // self.audio.play();
+            });
+
+            this.audioEl.addEventListener("readystatechange", (...data) => {
+              console.log("readystatechange", data);
+            });
+          });
+        },
+        watch: {
+          playStatus(value) {
+            console.log(value);
+          },
+        },
+        methods: {
+          nowProgress() {
+            var progressEl = this.$refs.progressRef
+            if(!progressEl) return 0
+            return (this.time/this.duration)*progressEl.getBoundingClientRect().width
+          },
+          prevAudio() {
+            this.endAudio();
+            this.audioEl.load();
+            this.selectMusicIndex = this.selectMusicIndex - 1;
+            this.selectMusicIndex =
+              this.selectMusicIndex < 0
+                ? this.audio.length - 1
+                : this.selectMusicIndex;
+            console.log(this.audio[this.selectMusicIndex]);
+            this.startAudio();
+          },
+          nextAudio() {
+            this.endAudio();
+            this.audioEl.load();
+            this.selectMusicIndex = this.selectMusicIndex + 1;
+            console.log(this.selectMusicIndex, this.audio.length);
+            this.selectMusicIndex =
+              this.selectMusicIndex >= this.audio.length
+                ? 0
+                : this.selectMusicIndex;
+            console.log(this.audio[this.selectMusicIndex]);
+            this.startAudio();
+          },
+          audioControl() {
+            this.startAudio();
+          },
+          endAudio() {
+            this.$refs.audioRef.pause();
+            this.playStatus = 0;
+            console.log(this.playStatus);
+          },
+          startAudio() {
+            this.$refs.audioRef.play();
+            this.playStatus = 1;
+            this.audioEl.addEventListener(
+              "timeupdate",
+              this.updateAudio,
+              false
+            );
+            this.audioEl.addEventListener("ended", this.nextAudio, false);
+          },
+          updateAudio() {
+            if (this.audioEl.paused) return;
+            if (this.time > 0) {
+              this.playStatus = 2;
+            }
+            // console.log('记录时间:'+this.time, '当前时间:'+ this.audio.currentTime)
+            if (this.time > this.audioEl.currentTime) {
+              // this.audio.pause();
+            }
+            this.duration = this.audioEl.duration;
+            this.time = this.audioEl.currentTime || 0;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "id": "1988587",
+  "name": "test",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1239930",
+      "name": "加载",
+      "font_class": "loading",
+      "unicode": "e699",
+      "unicode_decimal": 59033
+    },
+    {
+      "icon_id": "2154945",
+      "name": "播放器-播放_44",
+      "font_class": "play",
+      "unicode": "e6a4",
+      "unicode_decimal": 59044
+    },
+    {
+      "icon_id": "2154946",
+      "name": "播放器-暂停_44",
+      "font_class": "stop",
+      "unicode": "e6a5",
+      "unicode_decimal": 59045
+    },
+    {
+      "icon_id": "4357058",
+      "name": "12上一集-填充",
+      "font_class": "prev",
+      "unicode": "e657",
+      "unicode_decimal": 58967
+    },
+    {
+      "icon_id": "4357065",
+      "name": "11下一集-填充",
+      "font_class": "next",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    }
+  ]
+}
