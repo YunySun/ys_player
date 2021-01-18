@@ -19,7 +19,8 @@
   <body>
     <div id="app"></div>
     <style>
-      html, body {
+      html,
+      body {
         padding: 0;
         margin: 0;
       }
@@ -87,18 +88,33 @@
         margin: 0;
       }
 
+      .play__progress {
+        position: relative;
+      }
+
       .lc__progress {
+        display: flex;
+        align-items: center;
         position: relative;
         background-color: lightgray;
         width: 100%;
-        height: 4px;
+        height: 10px;
       }
 
       .progress__now {
-        height: 4px;
+        height: 10px;
         background-color: cornflowerblue;
       }
-      
+
+      .lc__progress .ic-progressor {
+        position: absolute;
+        left: 0;
+        width: 8px;
+        height: 8px;
+        background-color: #fff;
+        border: 2px solid deepskyblue;
+        border-radius: 50%;
+      }
     </style>
     <script>
       new Vue({
@@ -124,8 +140,9 @@
                   <span v-if="duration">{{ dealWithTime(time) + '/' + dealWithTime(duration) }}</span>
                 </div>
                 <div class="play__progress">
-                  <div class="lc__progress" ref="progressRef">
-                    <div class="progress__now" :style="{width: nowProgress()+'px'}"></div>   
+                  <div class="lc__progress" ref="progressRef" @mousedown="mouseDownAction" @mouseup="mouseUpAction" >
+                    <div class="progress__now" :style="{width: nowProgress+'px'}"></div>
+                    <i class="ic-progressor" :style="{left: nowProgress - 6 + 'px'}" ref="progressControlRef" ></i> 
                   </div> 
                 </div>
               </div> 
@@ -151,11 +168,11 @@
             duration: 0,
             playStatus: 0,
             time: 0,
+            nowProgress: 0,
+            // progressControlStyle: {left: '-6px'}
           };
         },
-        computed: {
-          
-        },
+        computed: {},
         created() {},
         mounted() {
           this.$nextTick(() => {
@@ -201,12 +218,49 @@
           playStatus(value) {
             console.log(value);
           },
+          time(value) {
+            var progressEl = this.$refs.progressRef;
+            if (progressEl) {
+              this.nowProgress =
+                (this.time / this.duration) *
+                progressEl.getBoundingClientRect().width;
+              // this.progressControlStyle = {left: this.nowProgress - 6 + 'px'}
+            }
+          },
         },
         methods: {
-          nowProgress() {
-            var progressEl = this.$refs.progressRef
-            if(!progressEl) return 0
-            return (this.time/this.duration)*progressEl.getBoundingClientRect().width
+          mouseDownAction(event) {
+            console.log(event.clientX, event.clientY)
+            var x1 = event.clientX - this.$refs.progressRef.getBoundingClientRect().left
+            this.nowProgress = x1;
+            this.$refs.progressRef.onmousemove = (e) => {
+              console.log('move', e.clientX, e.clientY)
+              console.log('left', this.$refs.progressRef.getBoundingClientRect().left)
+              var x2 = e.clientX - event.clientX
+              this.nowProgress = x1 + x2
+              console.log(e)
+              console.log(this.nowProgress)
+            }
+            this.$refs.progressRef.onmouseleave = this.mouseLeaveAction
+          },
+          mouseMoveAction(event) {
+            console.log('move', event.clientX, event.clientY)
+            console.log(event)
+          },
+          mouseLeaveAction(event) {
+            this.$refs.progressRef.onmousemove = null
+            this.$refs.progressRef.onmouseenter = this.mouseEnterAction
+          },
+          mouseEnterAction(event) {
+            this.mouseDownAction(event)
+          },
+          mouseUpAction(event) {
+            console.log('up')
+            this.$refs.progressRef.onmousemove = null;
+            this.$refs.progressRef.onmouseenter = null;
+            console.dir( this.$refs.progressRef)
+            this.time = this.audioEl.currentTime = this.nowProgress/this.$refs.progressRef.getBoundingClientRect().width*this.duration;
+            
           },
           prevAudio() {
             this.endAudio();
