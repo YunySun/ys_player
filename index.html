@@ -183,6 +183,14 @@
             // console.log('当前音频');
             // console.log(this.audio);
 
+            document.addEventListener("mouseup", () => {
+              console.log(1)
+              this.isDrag = false;
+              this.$refs.progressRef.onmousemove = null;
+              this.$refs.progressRef.onmouseenter = null;
+              this.$refs.progressRef.onmouseleave = null;
+            });
+
             this.audioEl.addEventListener("error", (...data) => {
               console.log("error", data);
             });
