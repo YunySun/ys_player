@@ -169,6 +169,9 @@
             playStatus: 0,
             time: 0,
             nowProgress: 0,
+            isDrag: false,
+            isLoadAndDrag: false,
+            nowPercentage: 0,
             // progressControlStyle: {left: '-6px'}
           };
         },
@@ -219,6 +222,7 @@
             console.log(value);
           },
           time(value) {
+            if (this.isDrag) return;
             var progressEl = this.$refs.progressRef;
             if (progressEl) {
               this.nowProgress =
@@ -230,37 +234,49 @@
         },
         methods: {
           mouseDownAction(event) {
-            console.log(event.clientX, event.clientY)
-            var x1 = event.clientX - this.$refs.progressRef.getBoundingClientRect().left
+            this.isDrag = true;
+            console.log(event.clientX, event.clientY);
+            var x1 =
+              event.clientX -
+              this.$refs.progressRef.getBoundingClientRect().left;
             this.nowProgress = x1;
             this.$refs.progressRef.onmousemove = (e) => {
-              console.log('move', e.clientX, e.clientY)
-              console.log('left', this.$refs.progressRef.getBoundingClientRect().left)
-              var x2 = e.clientX - event.clientX
-              this.nowProgress = x1 + x2
-              console.log(e)
-              console.log(this.nowProgress)
-            }
-            this.$refs.progressRef.onmouseleave = this.mouseLeaveAction
+              console.log("move", e.clientX, e.clientY);
+              console.log(
+                "left",
+                this.$refs.progressRef.getBoundingClientRect().left
+              );
+              var x2 = e.clientX - event.clientX;
+              this.nowProgress = x1 + x2;
+              console.log(e);
+              console.log(this.nowProgress);
+            };
+            this.$refs.progressRef.onmouseleave = this.mouseLeaveAction;
           },
           mouseMoveAction(event) {
-            console.log('move', event.clientX, event.clientY)
-            console.log(event)
+            console.log("move", event.clientX, event.clientY);
+            console.log(event);
           },
           mouseLeaveAction(event) {
-            this.$refs.progressRef.onmousemove = null
-            this.$refs.progressRef.onmouseenter = this.mouseEnterAction
+            this.$refs.progressRef.onmousemove = null;
+            this.$refs.progressRef.onmouseenter = this.mouseEnterAction;
           },
           mouseEnterAction(event) {
-            this.mouseDownAction(event)
+            this.mouseDownAction(event);
           },
           mouseUpAction(event) {
-            console.log('up')
+            console.log("up");
+            this.isDrag = false;
             this.$refs.progressRef.onmousemove = null;
             this.$refs.progressRef.onmouseenter = null;
-            console.dir( this.$refs.progressRef)
-            this.time = this.audioEl.currentTime = this.nowProgress/this.$refs.progressRef.getBoundingClientRect().width*this.duration;
-            
+            this.$refs.progressRef.onmouseleave = null;
+            console.dir(this.$refs.progressRef);
+            console.log(this.audioEl.currentTime, this.time);
+            this.nowPercentage =
+              this.nowProgress /
+              this.$refs.progressRef.getBoundingClientRect().width;
+            this.time = this.audioEl.currentTime =
+              this.nowPercentage * this.duration;
           },
           prevAudio() {
             this.endAudio();
@@ -313,7 +329,13 @@
               // this.audio.pause();
             }
             this.duration = this.audioEl.duration;
-            this.time = this.audioEl.currentTime || 0;
+            if (!this.isLoadAndDrag) {
+              this.time = this.audioEl.currentTime =
+                this.nowPercentage * this.duration;
+              this.isLoadAndDrag = true;
+            } else {
+              this.time = this.audioEl.currentTime || 0;
+            }
           },
         },
       });
