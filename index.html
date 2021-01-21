@@ -14,108 +14,11 @@
     <script src="./js/vue.min.js"></script>
     <script src="./js/utils.js"></script>
     <link rel="stylesheet" href="./font/iconfont.css" />
+    <link rel="stylesheet" href="./css/index.css" />
   </head>
 
   <body>
     <div id="app"></div>
-    <style>
-      html,
-      body {
-        padding: 0;
-        margin: 0;
-      }
-      .lc__audio {
-        position: fixed;
-        display: flex;
-        align-items: center;
-        height: 100px;
-        bottom: 0;
-        width: 100%;
-        background-color: aquamarine;
-      }
-
-      .lc__audio_control .iconfont {
-        font-size: 40px;
-      }
-
-      .lc_control_wrapper {
-        display: flex;
-        align-items: center;
-        width: 100%;
-      }
-
-      .lc__audio_control {
-        display: flex;
-        align-items: center;
-      }
-
-      .lc__audio_play {
-        margin: 0 20px;
-      }
-
-      .audio-loading {
-        display: inline-block;
-        -webkit-animation: audio-loading 1s linear infinite;
-        animation: audio-loading 1s linear infinite;
-        transform-origin: center;
-      }
-
-      @-webkit-keyframes audio-loading {
-        to {
-          -webkit-transform: rotate(360deg);
-          transform: rotate(360deg);
-        }
-      }
-
-      @keyframes audio-loading {
-        to {
-          -webkit-transform: rotate(360deg);
-          transform: rotate(360deg);
-        }
-      }
-
-      .audio-info {
-        flex: 1;
-      }
-
-      .flex-b-center {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      p {
-        padding-bottom: 10px;
-        margin: 0;
-      }
-
-      .play__progress {
-        position: relative;
-      }
-
-      .lc__progress {
-        display: flex;
-        align-items: center;
-        position: relative;
-        background-color: lightgray;
-        width: 100%;
-        height: 10px;
-      }
-
-      .progress__now {
-        height: 10px;
-        background-color: cornflowerblue;
-      }
-
-      .lc__progress .ic-progressor {
-        position: absolute;
-        left: 0;
-        width: 8px;
-        height: 8px;
-        background-color: #fff;
-        border: 2px solid deepskyblue;
-        border-radius: 50%;
-      }
-    </style>
     <script>
       new Vue({
         el: "#app",
@@ -125,6 +28,21 @@
                 <source :src="audio[selectMusicIndex].src" type="audio/mpeg">
             </audio>
             <div class="lc_control_wrapper">
+              <div class="audio-avatar"></div>
+              <div class="audio-info">
+                <div class="flex-b-center">
+                  <p>{{ audio[selectMusicIndex].title }} ---- {{ audio[selectMusicIndex].artist }}</p>
+                  <span v-if="duration">{{ dealWithTime(time) + '/' + dealWithTime(duration) }}</span>
+                </div>
+                <div class="play__progress">
+                  <div class="lc__progress" ref="progressRef" @mousedown="mouseDownAction" @mouseup="mouseUpAction" >
+                    <div class="progress__now" :style="{width: nowProgress+'px'}">
+                      <i class="ic-progressor" :style="{right: - 6 + 'px'}" ref="progressControlRef" ></i>
+                    </div> 
+                  </div> 
+                </div>
+              </div> 
+              
               <div class="lc__audio_control">
                 <span class="iconfont icon-prev" @click="prevAudio"></span>
                 <div class="lc__audio_play">
@@ -134,18 +52,43 @@
                 </div>
                 <span class="iconfont icon-next" @click="nextAudio"></span>
               </div>
-              <div class="audio-info">
-                <div class="flex-b-center">
-                  <p>{{ audio[selectMusicIndex].title }} ---- {{ audio[selectMusicIndex].artist }}</p>
-                  <span v-if="duration">{{ dealWithTime(time) + '/' + dealWithTime(duration) }}</span>
-                </div>
+
+              <div class="play__volume">
                 <div class="play__progress">
-                  <div class="lc__progress" ref="progressRef" @mousedown="mouseDownAction" @mouseup="mouseUpAction" >
-                    <div class="progress__now" :style="{width: nowProgress+'px'}"></div>
-                    <i class="ic-progressor" :style="{left: nowProgress - 6 + 'px'}" ref="progressControlRef" ></i> 
+                  <div class="lc__progress" ref="volumeProgressRef" @mousedown="volumeMouseDownAction" @mouseup="volumeMouseUpAction" >
+                    <div class="progress__now" :style="{width: nowVolume*volumeWidth+'px'}">
+                      <i class="ic-progressor" :style="{right: - 6 + 'px'}" ref="progressControlRef" ></i>
+                    </div> 
+                  </div> 
                   </div> 
                 </div>
-              </div> 
+              </div>
+              
+              <div class="play__rate">
+                <div class="r__selected" @click="isRateShow = !isRateShow">x{{ rateList[selectRateIndex] }}</div>
+                <ul v-show="isRateShow">
+                  <li v-for="(rItem, rIndex) in rateList" :key="'rate'+rIndex" @click="changeRate(rIndex)">
+                    {{ rItem }}
+                  </li>  
+                </ul>
+              </div>
+
+              <div class="play__list">
+                <i class="icon-list"  @click="isListShow = !isListShow">播放列表</i>
+                <div class="audio-list"  v-show="isListShow">
+                  <div class="flex-b-center">
+                    <p>播放列表{{ audio.length }}</p> 
+                    <i>清空列表</i> 
+                  </div>
+                  <ul>
+                    <li v-for="(aItem, aIndex) in audio" class="flex-b-center">
+                      <p>{{ aItem.title }}</p>  
+                      <p>{{ aItem.artist }}</p> 
+                      <p>10天前</p> 
+                    </li>  
+                  </ul>  
+                </div>
+              </div>
             </div>
           </div>
         `,
@@ -172,11 +115,22 @@
             isDrag: false,
             isLoadAndDrag: false,
             nowPercentage: 0,
+            rateList: ["0.5", "0.75", "1.0", "1.5", "2.0"],
+            selectRateIndex: 2,
+            isRateShow: false,
+            isListShow: false,
+            nowVolume: 1,
+            volumeWidth: 0,
             // progressControlStyle: {left: '-6px'}
           };
         },
-        computed: {},
-        created() {},
+        created() {
+          this.$nextTick(() => {
+            var volEl = this.$refs.volumeProgressRef;
+            this.volumeWidth =
+              volEl && volEl.getBoundingClientRect().width * this.nowVolume;
+          });
+        },
         mounted() {
           this.$nextTick(() => {
             this.audioEl = this.$refs.audioRef;
@@ -184,11 +138,14 @@
             // console.log(this.audio);
 
             document.addEventListener("mouseup", () => {
-              console.log(1)
+              console.log(1);
               this.isDrag = false;
               this.$refs.progressRef.onmousemove = null;
               this.$refs.progressRef.onmouseenter = null;
               this.$refs.progressRef.onmouseleave = null;
+              this.$refs.volumeProgressRef.onmousemove = null;
+              this.$refs.volumeProgressRef.onmouseenter = null;
+              this.$refs.volumeProgressRef.onmouseleave = null;
             });
 
             this.audioEl.addEventListener("error", (...data) => {
@@ -241,6 +198,55 @@
           },
         },
         methods: {
+          volumeMouseDownAction(event) {
+            if (!this.volumeWidth) {
+              var volEl = this.$refs.volumeProgressRef;
+              this.volumeWidth =
+                volEl && volEl.getBoundingClientRect().width * this.nowVolume;
+            }
+            var x1 =
+              event.clientX -
+              this.$refs.volumeProgressRef.getBoundingClientRect().left;
+            this.nowVolume = x1/this.volumeWidth;
+            this.$refs.volumeProgressRef.onmousemove = (e) => {
+              console.log("move", e.clientX, e.clientY);
+              console.log(
+                "left",
+                this.$refs.volumeProgressRef.getBoundingClientRect().left
+              );
+              var x2 = e.clientX - event.clientX;
+              this.nowVolume = (x1 + x2)/this.volumeWidth;
+              console.log(e);
+              console.log('音量：', this.nowVolume)
+            };
+            this.$refs.volumeProgressRef.onmouseleave = this.volumeMouseLeaveAction;
+          },
+          volumeMouseMoveAction(event) {
+            console.log("move", event.clientX, event.clientY);
+            console.log(event);
+          },
+          volumeMouseLeaveAction(event) {
+            this.$refs.volumeProgressRef.onmousemove = null;
+            this.$refs.volumeProgressRef.onmouseenter = this.volumeMouseEnterAction;
+          },
+          volumeMouseEnterAction(event) {
+            this.volumeMouseDownAction(event);
+          },
+          volumeMouseUpAction(event) {
+            console.log("up");
+            this.$refs.volumeProgressRef.onmousemove = null;
+            this.$refs.volumeProgressRef.onmouseenter = null;
+            this.$refs.volumeProgressRef.onmouseleave = null;
+            console.dir(this.$refs.progressRef);
+            console.log(this.audioEl.currentTime, this.time);
+            console.log('音量up',this.nowVolume)
+            this.audioEl.volume = this.nowVolume
+          },
+          changeRate(index) {
+            this.selectRateIndex = index;
+            this.$refs.audioRef.playbackRate = this.rateList[index];
+            this.isRateShow = false;
+          },
           mouseDownAction(event) {
             this.isDrag = true;
             console.log(event.clientX, event.clientY);

@@ -1,0 +1,132 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+ul, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lc__audio {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  height: 100px;
+  bottom: 0;
+  width: 100%;
+  background-color: aquamarine;
+}
+
+.lc__audio_control .iconfont {
+  font-size: 40px;
+}
+
+.lc_control_wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.lc__audio_control {
+  display: flex;
+  align-items: center;
+}
+
+.audio-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: red;
+}
+
+.lc__audio_play {
+  margin: 0 20px;
+}
+
+.audio-loading {
+  display: inline-block;
+  -webkit-animation: audio-loading 1s linear infinite;
+  animation: audio-loading 1s linear infinite;
+  transform-origin: center;
+}
+
+@-webkit-keyframes audio-loading {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes audio-loading {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.audio-info {
+  flex: 1;
+  margin: 20px;
+}
+
+.flex-b-center {
+  display: flex;
+  justify-content: space-between;
+}
+
+p {
+  padding-bottom: 10px;
+  margin: 0;
+}
+
+.play__progress {
+  position: relative;
+}
+
+.lc__progress {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: lightgray;
+  width: 100%;
+  height: 10px;
+}
+
+.progress__now {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 10px;
+  background-color: cornflowerblue;
+}
+
+.lc__progress .ic-progressor {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #fff;
+  border: 2px solid deepskyblue;
+  border-radius: 50%;
+}
+
+.play__rate {
+  position: relative;
+  padding: 0 20px;
+}
+
+.play__rate ul {
+  position: absolute;
+  bottom: 30px;
+}
+
+.play__list .audio-list {
+  position: absolute;
+  bottom: 100px;
+  left: 0;
+}
+
+.play__volume {
+  width: 100px;
+}
