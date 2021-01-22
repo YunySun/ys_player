@@ -11,14 +11,15 @@
     />
     <title>音频播放器</title>
     <style></style>
-    <script src="./js/vue.min.js"></script>
-    <script src="./js/utils.js"></script>
     <link rel="stylesheet" href="./font/iconfont.css" />
     <link rel="stylesheet" href="./css/index.css" />
   </head>
 
   <body>
     <div id="app"></div>
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/progressBar.js"></script>
     <script>
       new Vue({
         el: "#app",
@@ -34,13 +35,7 @@
                   <p>{{ audio[selectMusicIndex].title }} ---- {{ audio[selectMusicIndex].artist }}</p>
                   <span v-if="duration">{{ dealWithTime(time) + '/' + dealWithTime(duration) }}</span>
                 </div>
-                <div class="play__progress">
-                  <div class="lc__progress" ref="progressRef" @mousedown="mouseDownAction" @mouseup="mouseUpAction" >
-                    <div class="progress__now" :style="{width: nowProgress+'px'}">
-                      <i class="ic-progressor" :style="{right: - 6 + 'px'}" ref="progressControlRef" ></i>
-                    </div> 
-                  </div> 
-                </div>
+                <progress-bar v-model="nowAudioProgress" @mousedown="audioMouseDownAction" @mouseup="audioMouseUpAction" />
               </div> 
               
               <div class="lc__audio_control">
@@ -54,14 +49,7 @@
               </div>
 
               <div class="play__volume">
-                <div class="play__progress">
-                  <div class="lc__progress" ref="volumeProgressRef" @mousedown="volumeMouseDownAction" @mouseup="volumeMouseUpAction" >
-                    <div class="progress__now" :style="{width: nowVolume*volumeWidth+'px'}">
-                      <i class="ic-progressor" :style="{right: - 6 + 'px'}" ref="progressControlRef" ></i>
-                    </div> 
-                  </div> 
-                  </div> 
-                </div>
+                <progress-bar v-model="nowVolume" @mouseup="volumeMouseUpAction" />
               </div>
               
               <div class="play__rate">
@@ -111,7 +99,7 @@
             duration: 0,
             playStatus: 0,
             time: 0,
-            nowProgress: 0,
+            nowAudioProgress: 0,
             isDrag: false,
             isLoadAndDrag: false,
             nowPercentage: 0,
@@ -120,8 +108,6 @@
             isRateShow: false,
             isListShow: false,
             nowVolume: 1,
-            volumeWidth: 0,
-            // progressControlStyle: {left: '-6px'}
           };
         },
         created() {
@@ -134,19 +120,6 @@
         mounted() {
           this.$nextTick(() => {
             this.audioEl = this.$refs.audioRef;
-            // console.log('当前音频');
-            // console.log(this.audio);
-
-            document.addEventListener("mouseup", () => {
-              console.log(1);
-              this.isDrag = false;
-              this.$refs.progressRef.onmousemove = null;
-              this.$refs.progressRef.onmouseenter = null;
-              this.$refs.progressRef.onmouseleave = null;
-              this.$refs.volumeProgressRef.onmousemove = null;
-              this.$refs.volumeProgressRef.onmouseenter = null;
-              this.$refs.volumeProgressRef.onmouseleave = null;
-            });
 
             this.audioEl.addEventListener("error", (...data) => {
               console.log("error", data);
@@ -155,18 +128,6 @@
             this.audioEl.addEventListener("play", (...data) => {
               console.log("play", data);
               console.log(this.audioEl.duration);
-              // this.audioEl.currentTime = this.time;
-              // this.duration = this.audioEl.duration;
-              // console.log(self.audio.currentTime)
-              // if (this.audio.currentTime === 0) {
-
-              // }
-              //     setTimeout(function () {
-              //         console.log('currentTime:'+Math.round(self.audio.currentTime));
-              //         if (self.audio.currentTime < 0.1) {
-              //             self.endAudio()
-              //         }
-              //     }, 1000)
             });
 
             this.audioEl.addEventListener("playing", (...data) => {
@@ -188,109 +149,28 @@
           },
           time(value) {
             if (this.isDrag) return;
-            var progressEl = this.$refs.progressRef;
-            if (progressEl) {
-              this.nowProgress =
-                (this.time / this.duration) *
-                progressEl.getBoundingClientRect().width;
-              // this.progressControlStyle = {left: this.nowProgress - 6 + 'px'}
-            }
+            this.nowAudioProgress = this.time / this.duration;
           },
         },
         methods: {
-          volumeMouseDownAction(event) {
-            if (!this.volumeWidth) {
-              var volEl = this.$refs.volumeProgressRef;
-              this.volumeWidth =
-                volEl && volEl.getBoundingClientRect().width * this.nowVolume;
-            }
-            var x1 =
-              event.clientX -
-              this.$refs.volumeProgressRef.getBoundingClientRect().left;
-            this.nowVolume = x1/this.volumeWidth;
-            this.$refs.volumeProgressRef.onmousemove = (e) => {
-              console.log("move", e.clientX, e.clientY);
-              console.log(
-                "left",
-                this.$refs.volumeProgressRef.getBoundingClientRect().left
-              );
-              var x2 = e.clientX - event.clientX;
-              this.nowVolume = (x1 + x2)/this.volumeWidth;
-              console.log(e);
-              console.log('音量：', this.nowVolume)
-            };
-            this.$refs.volumeProgressRef.onmouseleave = this.volumeMouseLeaveAction;
+          // 音频松开事件
+          audioMouseUpAction(event) {
+            this.time = this.audioEl.currentTime = this.nowAudioProgress * this.duration;
+            this.isDrag = false;
           },
-          volumeMouseMoveAction(event) {
-            console.log("move", event.clientX, event.clientY);
-            console.log(event);
+          // 音频按下事件
+          audioMouseDownAction(event) {
+            console.log('音频按下事件', 1)
+            this.isDrag = true;
           },
-          volumeMouseLeaveAction(event) {
-            this.$refs.volumeProgressRef.onmousemove = null;
-            this.$refs.volumeProgressRef.onmouseenter = this.volumeMouseEnterAction;
-          },
-          volumeMouseEnterAction(event) {
-            this.volumeMouseDownAction(event);
-          },
+          // 音量控制松开事件
           volumeMouseUpAction(event) {
-            console.log("up");
-            this.$refs.volumeProgressRef.onmousemove = null;
-            this.$refs.volumeProgressRef.onmouseenter = null;
-            this.$refs.volumeProgressRef.onmouseleave = null;
-            console.dir(this.$refs.progressRef);
-            console.log(this.audioEl.currentTime, this.time);
-            console.log('音量up',this.nowVolume)
-            this.audioEl.volume = this.nowVolume
+            this.audioEl.volume = this.nowVolume;
           },
           changeRate(index) {
             this.selectRateIndex = index;
             this.$refs.audioRef.playbackRate = this.rateList[index];
             this.isRateShow = false;
-          },
-          mouseDownAction(event) {
-            this.isDrag = true;
-            console.log(event.clientX, event.clientY);
-            var x1 =
-              event.clientX -
-              this.$refs.progressRef.getBoundingClientRect().left;
-            this.nowProgress = x1;
-            this.$refs.progressRef.onmousemove = (e) => {
-              console.log("move", e.clientX, e.clientY);
-              console.log(
-                "left",
-                this.$refs.progressRef.getBoundingClientRect().left
-              );
-              var x2 = e.clientX - event.clientX;
-              this.nowProgress = x1 + x2;
-              console.log(e);
-              console.log(this.nowProgress);
-            };
-            this.$refs.progressRef.onmouseleave = this.mouseLeaveAction;
-          },
-          mouseMoveAction(event) {
-            console.log("move", event.clientX, event.clientY);
-            console.log(event);
-          },
-          mouseLeaveAction(event) {
-            this.$refs.progressRef.onmousemove = null;
-            this.$refs.progressRef.onmouseenter = this.mouseEnterAction;
-          },
-          mouseEnterAction(event) {
-            this.mouseDownAction(event);
-          },
-          mouseUpAction(event) {
-            console.log("up");
-            this.isDrag = false;
-            this.$refs.progressRef.onmousemove = null;
-            this.$refs.progressRef.onmouseenter = null;
-            this.$refs.progressRef.onmouseleave = null;
-            console.dir(this.$refs.progressRef);
-            console.log(this.audioEl.currentTime, this.time);
-            this.nowPercentage =
-              this.nowProgress /
-              this.$refs.progressRef.getBoundingClientRect().width;
-            this.time = this.audioEl.currentTime =
-              this.nowPercentage * this.duration;
           },
           prevAudio() {
             this.endAudio();
@@ -345,7 +225,7 @@
             this.duration = this.audioEl.duration;
             if (!this.isLoadAndDrag) {
               this.time = this.audioEl.currentTime =
-                this.nowPercentage * this.duration;
+                this.nowAudioProgress * this.duration;
               this.isLoadAndDrag = true;
             } else {
               this.time = this.audioEl.currentTime || 0;
