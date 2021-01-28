@@ -1,44 +1,79 @@
 {
   "id": "1988587",
-  "name": "test",
+  "name": "YouSheng",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
     {
-      "icon_id": "1239930",
-      "name": "加载",
-      "font_class": "loading",
-      "unicode": "e699",
-      "unicode_decimal": 59033
+      "icon_id": "6263352",
+      "name": "播放",
+      "font_class": "bofang",
+      "unicode": "e66e",
+      "unicode_decimal": 58990
     },
     {
-      "icon_id": "2154945",
-      "name": "播放器-播放_44",
-      "font_class": "play",
-      "unicode": "e6a4",
-      "unicode_decimal": 59044
-    },
-    {
-      "icon_id": "2154946",
-      "name": "播放器-暂停_44",
-      "font_class": "stop",
-      "unicode": "e6a5",
-      "unicode_decimal": 59045
-    },
-    {
-      "icon_id": "4357058",
-      "name": "12上一集-填充",
-      "font_class": "prev",
+      "icon_id": "1526274",
+      "name": "锁 1",
+      "font_class": "suo",
       "unicode": "e657",
       "unicode_decimal": 58967
     },
     {
-      "icon_id": "4357065",
-      "name": "11下一集-填充",
+      "icon_id": "1526275",
+      "name": "锁 2",
+      "font_class": "kaisuo",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
+      "icon_id": "19597730",
+      "name": "play",
+      "font_class": "play",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "19597729",
+      "name": "stop",
+      "font_class": "stop",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "7629052",
+      "name": "加载",
+      "font_class": "loading",
+      "unicode": "e6b4",
+      "unicode_decimal": 59060
+    },
+    {
+      "icon_id": "15346591",
+      "name": "播放列表",
+      "font_class": "list",
+      "unicode": "e6a7",
+      "unicode_decimal": 59047
+    },
+    {
+      "icon_id": "17710863",
+      "name": "音量",
+      "font_class": "volume",
+      "unicode": "e80c",
+      "unicode_decimal": 59404
+    },
+    {
+      "icon_id": "18661940",
+      "name": "前进",
+      "font_class": "prev",
+      "unicode": "e6bb",
+      "unicode_decimal": 59067
+    },
+    {
+      "icon_id": "18661943",
+      "name": "后退",
       "font_class": "next",
-      "unicode": "e659",
-      "unicode_decimal": 58969
+      "unicode": "e6bc",
+      "unicode_decimal": 59068
     }
   ]
 }

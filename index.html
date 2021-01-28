@@ -28,16 +28,18 @@
             <audio preload="auto" ref="audioRef">
                 <source :src="audio[selectMusicIndex].src" type="audio/mpeg">
             </audio>
+            <div class="lc_suo"><i class="iconfont icon-suo"></i></div>
+            <!--<div class="lc_suo"><i class="iconfont icon-kaisuo"></i></div>-->
             <div class="lc_control_wrapper">
               <div class="audio-avatar"></div>
               <div class="audio-info">
                 <div class="flex-b-center">
-                  <p>{{ audio[selectMusicIndex].title }} ---- {{ audio[selectMusicIndex].artist }}</p>
-                  <span v-if="duration">{{ dealWithTime(time) + '/' + dealWithTime(duration) }}</span>
+                  <p class="audio-bookname">{{ audio[selectMusicIndex].title }} ---- {{ audio[selectMusicIndex].artist }}</p>
+                  <span v-if="duration" class="audio-date"><b>{{ dealWithTime(time)}}</b><i>/</i>{{dealWithTime(duration) }}</span>
                 </div>
                 <progress-bar v-model="nowAudioProgress" @mousedown="audioMouseDownAction" @mouseup="audioMouseUpAction" />
-              </div> 
-              
+              </div>
+
               <div class="lc__audio_control">
                 <span class="iconfont icon-prev" @click="prevAudio"></span>
                 <div class="lc__audio_play">
@@ -47,34 +49,40 @@
                 </div>
                 <span class="iconfont icon-next" @click="nextAudio"></span>
               </div>
-
+              <div class="flex-b-center volume">
+              <span class="iconfont icon-volume" ></span>
               <div class="play__volume">
                 <progress-bar v-model="nowVolume" @mouseup="volumeMouseUpAction" />
               </div>
-              
+              </div>
+
               <div class="play__rate">
                 <div class="r__selected" @click="isRateShow = !isRateShow">x{{ rateList[selectRateIndex] }}</div>
                 <ul v-show="isRateShow">
                   <li v-for="(rItem, rIndex) in rateList" :key="'rate'+rIndex" @click="changeRate(rIndex)">
                     {{ rItem }}
-                  </li>  
+                  </li>
                 </ul>
               </div>
 
               <div class="play__list">
-                <i class="icon-list"  @click="isListShow = !isListShow">播放列表</i>
+                <i class="icon-list iconfont icon-list"  @click="isListShow = !isListShow"></i>
                 <div class="audio-list"  v-show="isListShow">
-                  <div class="flex-b-center">
-                    <p>播放列表{{ audio.length }}</p> 
-                    <i>清空列表</i> 
+                  <div class="flex-b-center audio-list-tit">
+                    <p>播放列表<span class="audio-list-tit-num">（{{ audio.length }}）</span></p>
+                    <i class="del">清空列表</i>
                   </div>
-                  <ul>
-                    <li v-for="(aItem, aIndex) in audio" class="flex-b-center">
-                      <p>{{ aItem.title }}</p>  
-                      <p>{{ aItem.artist }}</p> 
-                      <p>10天前</p> 
-                    </li>  
-                  </ul>  
+                  <ul class="play-list-con">
+                    <li v-for="(aItem, aIndex) in audio " class="flex-b-center">
+                      <p class="play-list-num">1</p>
+                      <!--<p class="play-list-num"><span class="xui-playing"><i></i><i></i><i></i><i></i></span></p>-->
+                      <!--<p class="play-list-num"><i class="iconfont icon-bofang"></i></p>-->
+                      <p class="play-list-chapter ">{{ aItem.title }}</p>
+                      <!--<p class="play-list-chapter cred">{{ aItem.title }}</p>-->
+                      <p  class="play-list-bookname">{{ aItem.artist }}</p>
+                      <p  class="play-list-date">10天前</p>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -120,7 +128,7 @@
         mounted() {
           this.$nextTick(() => {
             this.audioEl = this.$refs.audioRef;
-
+            console.log(this.audioEl)
             this.audioEl.addEventListener("error", (...data) => {
               console.log("error", data);
             });

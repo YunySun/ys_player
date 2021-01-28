@@ -1,133 +1,403 @@
 html,
 body {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 ul, li {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .lc__audio {
-  position: fixed;
-  display: flex;
-  align-items: center;
-  height: 100px;
-  bottom: 0;
-  width: 100%;
-  background-color: aquamarine;
-}
-
-.lc__audio_control .iconfont {
-  font-size: 40px;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    height: 66px;
+    bottom: 0;
+    width: 100%;
+    background-color: #222;
+    box-shadow: 0 -6px 12px rgba(0,0,0,.1);
 }
 
 .lc_control_wrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
+    display: flex;
+    align-items: center;
+    width: 1080px;
+    margin: 0 auto;
 }
 
-.lc__audio_control {
-  display: flex;
-  align-items: center;
-}
-
+/*封面*/
 .audio-avatar {
-  width: 40px;
-  height: 40px;
-  background-color: red;
+    width: 50px;
+    height: 50px;
+    background-color: #eee;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+
+}
+
+/*播放器*/
+.lc__audio_control {
+    display: flex;
+    align-items: center;
+    margin: 0 60px;
 }
 
 .lc__audio_play {
-  margin: 0 20px;
+    margin: 0 35px;
+}
+
+.icon-play, .icon-stop, .icon-loading {
+    font-size: 40px;
+}
+
+/*播放-暂停-加载*/
+.icon-play, .icon-stop, .icon-loading {
+    color: #fff;
+}
+
+/*前进-后退*/
+.lc__audio_control .icon-prev, .lc__audio_control .icon-next {
+    color: #8d8d8d;
+    font-size: 18px;
 }
 
 .audio-loading {
-  display: inline-block;
-  -webkit-animation: audio-loading 1s linear infinite;
-  animation: audio-loading 1s linear infinite;
-  transform-origin: center;
+    display: inline-block;
+    -webkit-animation: audio-loading 1s linear infinite;
+    animation: audio-loading 1s linear infinite;
+    transform-origin: center;
 }
 
 @-webkit-keyframes audio-loading {
-  to {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes audio-loading {
-  to {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 
+/*播放进度*/
 .audio-info {
-  flex: 1;
-  margin: 20px;
+    flex: 1;
+    margin: 0 25px;
+    color: #fff;
+    font-size: 12px;
 }
 
 .flex-b-center {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 
-p {
-  padding-bottom: 10px;
-  margin: 0;
+.audio-bookname {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-bottom: 16px;
+    margin: 0;
+}
+
+.audio-date {
+    color: #999;
+}
+
+.audio-date b {
+    color: #f33;
+    font-weight: normal;
+}
+
+.audio-date i {
+    margin: 0 10px;
 }
 
 .progress {
-  position: relative;
+    position: relative;
 }
 
 .progress-back {
-  display: flex;
-  align-items: center;
-  position: relative;
-  background-color: lightgray;
-  width: 100%;
-  height: 10px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background-color: #999;
+    width: 100%;
+    height: 2px;
 }
 
 .progress__now {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: 10px;
-  background-color: cornflowerblue;
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 2px;
+    background-color: #f33;
 }
 
 .progress-back .ic-progressor {
-  position: absolute;
-  right: -6px;
-  width: 8px;
-  height: 8px;
-  background-color: #fff;
-  border: 2px solid deepskyblue;
-  border-radius: 50%;
+    position: absolute;
+    right: -6px;
+    width: 8px;
+    height: 8px;
+    background-color: #f33;
+    border: 2px solid #f33;
+    border-radius: 50%;
 }
 
+
+/*播放速度*/
 .play__rate {
-  position: relative;
-  padding: 0 20px;
+    position: relative;
+
 }
 
+.r__selected {
+    font-size: 12px;
+    color: #fff;
+    padding: 10px;
+}
 .play__rate ul {
-  position: absolute;
-  bottom: 30px;
+    position: absolute;
+    bottom: 52px;
+    width: 50px;
+    background-color: #222;
+    -moz-box-shadow: 6px 0 12px rgba(0, 0, 0, .45);
+    -webkit-box-shadow: 6px 0 12px rgba(0, 0, 0, .45);
+    box-shadow: 6px 0 12px rgba(0, 0, 0, .45);
+    text-align:center;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+    padding:10px 0;
+    z-index:10000;
+}
+.play__rate li{
+    font-size:12px;
+    padding:8px 0;
+    color:#fff;
+}
+
+/*播放列表*/
+.icon-list {
+    font-size: 16px;
+    color:#fff;
+    padding:10px;
+    margin-left: 15px;
 }
 
 .play__list .audio-list {
-  position: absolute;
-  bottom: 100px;
-  left: 0;
+    position: fixed;
+    left: 50%;
+    bottom: 66px;
+    width: 1080px;
+    margin-left: -540px;
+    background: rgba(0,0,0,.85);
+    -webkit-box-shadow: 0 -2px 4px 0 rgba(0,0,0,.2);
+    box-shadow: 0 -2px 4px 0 rgba(0,0,0,.2);
+    border-radius: 4px 4px 0 0;
+    z-index: 9999;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+
+}
+.audio-list-tit{
+    border-bottom:1px solid #555;
+    height:52px;
+    color:#fff;
+    align-items: center;
+    margin:0 30px;
+    width:1020px;
+}
+.audio-list-tit p{
+    font-size:20px;
+}
+.audio-list-tit p .audio-list-tit-num{
+    color:#bbb;
+    font-size:14px;
+}
+.del{
+    font-style: normal;
+    font-size:14px;
+}
+.play-list-con{
+    max-height: 260px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.play-list-con li{
+    height:42px;
+    width:100%;
+    color:#fff;
+    display:flex;
+    align-items: center;
+    font-size:14px;
+    transition: all .45s ease-in-out;
+    padding:0 30px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.play-list-con li:hover{
+    background-color: rgba(255,255,255,.1);
+    cursor: pointer;
+}
+.play-list-num{
+    width:50px;
+    text-align: center;
+    color:#bbb;
+}
+.play-list-chapter , .play-list-bookname{
+    white-space:nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.play-list-chapter{
+    padding-left:10px;
+    width:560px;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+}
+.play-list-bookname{
+    color:#bbb;
+    width:300px;
+}
+.play-list-date{
+    width: 110px;
+    text-align: right;
+}
+.xui-playing {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: justify;
+    font-size: 10px;
+    width: 20px;
+    height: 16px;
 }
 
-.play__volume {
-  width: 100px;
+.xui-playing::after {
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
 }
+
+.xui-playing i {
+    display: inline-block;
+    width: 2px;
+    height: 16px;
+    -moz-border-radius: 100px;
+    -webkit-border-radius: 100px;
+    border-radius: 100px;
+    margin: 0 1px;
+    background: #f33;
+    -webkit-animation: is-playing .5s ease infinite alternate;
+    animation: is-playing .5s ease infinite alternate;
+    -webkit-transform-origin: bottom;
+    -ms-transform-origin: bottom;
+    transform-origin: bottom;
+}
+
+.xui-playing i:nth-child(1) {
+    -webkit-animation-delay: .15s;
+    animation-delay: 0.15s;
+}
+
+.xui-playing i:nth-child(2) {
+    -webkit-animation-delay: .3s;
+    animation-delay: 0.3s;
+}
+
+.xui-playing i:nth-child(3) {
+    -webkit-animation-delay: .45s;
+    animation-delay: 0.45s;
+}
+
+.xui-playing i:nth-child(4) {
+    -webkit-animation-delay: .6s;
+    animation-delay: 0.6s;
+}
+
+@-webkit-keyframes is-playing {
+    0% {
+        -webkit-transform: scaleY(0.2);
+        transform: scaleY(0.2);
+    }
+    100% {
+        -webkit-transform: scaleY(1);
+        transform: scaleY(1);
+    }
+}
+.cred{
+    color:#f33;
+}
+.icon-bofang{
+    color:#f33;
+    font-size:14px;
+}
+.lc_suo{
+    position: absolute;
+    right: 40px;
+    top: -24px;
+    width: 40px;
+    height: 24px;
+    line-height:26px;
+    background-color: #222;
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+    text-align: center;
+    box-shadow: 0 -6px 12px rgba(0,0,0,.1);
+}
+.icon-suo , .icon-kaisuo{
+   color:#fff;
+    font-size:14px;
+}
+
+::-webkit-scrollbar
+{
+    width: 8px;
+    height: 8px;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-track
+{
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,.8);
+}
+
+/*播放音量*/
+.volume {
+    align-items: center;
+    margin:0 30px;
+
+}
+.icon-volume{
+    color:#fff;
+    font-size:20px;
+}
+.play__volume {
+    width: 90px;
+    margin-left: 5px;
+}
+.iconfont:hover , .r__selected:hover , .play__rate li:hover , .del:hover{
+    cursor:pointer;
+    color:#f33;
+}
+.icon-volume:hover{
+    color:#fff;
+}
+
